@@ -52,6 +52,7 @@ use App\Controller\LoginAttemptsController;
 use App\Controller\MessagesController;
 use App\Controller\TimerController;
 use App\Locations\Controllers\Locations;
+use App\Obligations\Controllers\ObligationsControllers;
 use App\Operations\Controllers\OperationsController;
 use PiecesPHP\BuiltIn\Article\Controllers\ArticleController;
 use PiecesPHP\BuiltIn\Article\Controllers\ArticleControllerPublic;
@@ -84,6 +85,7 @@ $token_handler = new PiecesRouteGroup($prefix_lang . '/tokens'); //Servido perso
 
 //COINWATCHER
 $operations = new PiecesRouteGroup($prefix_lang . '/operations'); //operaciones
+$obligations = new PiecesRouteGroup($prefix_lang . '/obligations'); //obligaciones
 
 //──── REGISTRAR RUTAS ───────────────────────────────────────────────────────────────────
 
@@ -135,6 +137,7 @@ DynamicImagesRoutes::routes($zona_administrativa);
 
 //COINWATCHER
 OperationsController::routes($operations);
+ObligationsControllers::routes($obligations);
 
 $sistema_avatares->register(
 	[

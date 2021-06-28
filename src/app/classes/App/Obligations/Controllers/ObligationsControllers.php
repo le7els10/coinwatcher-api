@@ -205,8 +205,8 @@ class ObligationsControllers extends AdminPanelController
 		$name = $request->getParsedBodyParam('name', null);
 		$paid = $request->getParsedBodyParam('paid', null);
 		$value = $request->getParsedBodyParam('value', null);
-		$current_date = getdate();
-		$current_date = $current_date[0];
+		$current_user_id = $this->user->id;
+
 		$is_edit = $id !== -1;
 
 		$valid_params = !in_array(null, [
@@ -241,7 +241,7 @@ class ObligationsControllers extends AdminPanelController
 					$mapper->name = $name;
 					$mapper->paid = $paid;
 					$mapper->value = $value;
-					$mapper->wrote = $current_date;
+					$mapper->user_id = $current_user_id;
 					$saved = $mapper->save();
 
 					if ($saved) {
@@ -269,7 +269,7 @@ class ObligationsControllers extends AdminPanelController
 						$mapper->name = $name;
 						$mapper->paid = $paid;
 						$mapper->value = $value;
-						$mapper->wrote = $current_date;
+						$mapper->user_id = $current_user_id;
 
 						$updated = $mapper->update();
 

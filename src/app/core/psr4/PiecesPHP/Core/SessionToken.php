@@ -3,6 +3,7 @@
 /**
  * SessionToken.php
  */
+
 namespace PiecesPHP\Core;
 
 use PiecesPHP\Core\BaseToken;
@@ -18,114 +19,110 @@ use PiecesPHP\Core\BaseToken;
  */
 class SessionToken
 {
-    const TOKEN_NAME = 'JWTAuth';
+	const TOKEN_NAME = 'JWTAuth';
 
-    const DEFAULT_MINIMUM_DATE_CREATED = '1990-01-01';
+	const DEFAULT_MINIMUM_DATE_CREATED = '1990-01-01';
 
-    /**
-     * $minimumDateCreated
-     *
-     * @var \DateTime
-     */
-    private static $minimumDateCreated = null;
+	/**
+	 * $minimumDateCreated
+	 *
+	 * @var \DateTime
+	 */
+	private static $minimumDateCreated = null;
 
-    /**
-     * @param mixed $data Información que se almacenará en el token
-     * @param string $key Llave
-     * @param int $expire_time Duración en segundos
-     * @return string El token generado
-     */
-    public static function generateToken($data, string $key = null, int $expire_time = null)
-    {
-        $time = time();
+	/**
+	 * @param mixed $data Información que se almacenará en el token
+	 * @param string $key Llave
+	 * @param int $expire_time Duración en segundos
+	 * @return string El token generado
+	 */
+	public static function generateToken($data, string $key = null, int $expire_time = null)
+	{
+		$time = time();
 
-        if (is_null($expire_time)) {
-            $expire_time = $time + 31 * 24 * 3600;
-        } else {
-            $expire_time += $time;
-        }
+		if (is_null($expire_time)) {
+			$expire_time = $time + 31 * 24 * 3600;
+		} else {
+			$expire_time += $time;
+		}
 
-        $token = BaseToken::setToken($data, $key, $time, $expire_time, true);
+		$token = BaseToken::setToken($data, $key, $time, $expire_time, true);
 
-        return $token;
-    }
+		return $token;
+	}
 
-    /**
-     * isActiveSession
-     *
-     * @param string $token
-     * @param string $key
-     * @return bool
-     */
-    public static function isActiveSession(string $token, string $key = null)
-    {
-        $logged = BaseToken::check($token, $key);
+	/**
+	 * isActiveSession
+	 *
+	 * @param string $token
+	 * @param string $key
+	 * @return bool
+	 */
+	public static function isActiveSession(string $token, string $key = null)
+	{
+		$logged = BaseToken::check($token, $key);
 
-        if (self::$minimumDateCreated === null) {
-            self::$minimumDateCreated = new \DateTime(self::DEFAULT_MINIMUM_DATE_CREATED);
-        }
+		if (self::$minimumDateCreated === null) {
+			self::$minimumDateCreated = new \DateTime(self::DEFAULT_MINIMUM_DATE_CREATED);
+		}
 
-        if ($logged !== true) {
+		if ($logged !== true) {
 
-            return false;
+			return false;
+		} else if ($logged === true) {
 
-        } else if ($logged === true) {
+			$dateCreatedToken = BaseToken::getCreated($token, $key);
+			$dateCreatedToken = new \DateTime(date('Y-m-d H:i:s', $dateCreatedToken));
 
-            $dateCreatedToken = BaseToken::getCreated($token, $key);
-            $dateCreatedToken = new \DateTime(date('Y-m-d H:i:s', $dateCreatedToken));
+			if ($dateCreatedToken >= self::$minimumDateCreated) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
 
-            if ($dateCreatedToken >= self::$minimumDateCreated) {
-                return true;
-            } else {
-                return false;
-            }
+	/**
+	 * getJWTReceived
+	 *
+	 * @return string
+	 */
+	public static function getJWTReceived()
+	{
 
-        } else {
-            return false;
-        }
+		$JWT = '';
 
-    }
+		$name_on_server = 'HTTP_' . strtoupper(self::TOKEN_NAME);
 
-    /**
-     * getJWTReceived
-     *
-     * @return string
-     */
-    public static function getJWTReceived()
-    {
+		if (isset($_SERVER[$name_on_server])) {
 
-        $JWT = '';
+			$JWT = $_SERVER[$name_on_server];
+		} elseif (isset($_COOKIE[self::TOKEN_NAME])) {
 
-        $name_on_server = 'HTTP_' . strtoupper(self::TOKEN_NAME);
+			$JWT = $_COOKIE[self::TOKEN_NAME];
+		} elseif (isset($_POST["token"])) {
+			$JWT = $_POST["token"];
+		}
 
-        if (isset($_SERVER[$name_on_server])) {
+		return $JWT;
+	}
 
-            $JWT = $_SERVER[$name_on_server];
+	/**
+	 * setMinimumDateCreated
+	 *
+	 * @param \DateTime $minimumDateCreated
+	 * @return void
+	 */
+	public static function setMinimumDateCreated(\DateTime $minimumDateCreated)
+	{
+		self::$minimumDateCreated = $minimumDateCreated;
+	}
 
-        } elseif (isset($_COOKIE[self::TOKEN_NAME])) {
-
-            $JWT = $_COOKIE[self::TOKEN_NAME];
-
-        }
-
-        return $JWT;
-    }
-
-    /**
-     * setMinimumDateCreated
-     *
-     * @param \DateTime $minimumDateCreated
-     * @return void
-     */
-    public static function setMinimumDateCreated(\DateTime $minimumDateCreated)
-    {
-        self::$minimumDateCreated = $minimumDateCreated;
-    }
-
-    //---- Preservación de compatibilidad
-    public static function initSession($data, string $key = null, int $expire_time = null)
-    {
-        return self::generateToken($data, $key, $expire_time);
-    }
-
+	//---- Preservación de compatibilidad
+	public static function initSession($data, string $key = null, int $expire_time = null)
+	{
+		return self::generateToken($data, $key, $expire_time);
+	}
 }

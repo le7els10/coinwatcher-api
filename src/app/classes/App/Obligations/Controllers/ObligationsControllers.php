@@ -190,6 +190,37 @@ class ObligationsControllers extends AdminPanelController
 	}
 
 	/**
+	 * listByUser
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Response
+	 */
+	public function listByUser(Request $request, Response $response, array $args)
+	{
+		$current_user_id = $this->user->id;
+		$res = MainMapper::getListByUser($current_user_id);
+		return $response->withJson($res);
+	}
+
+	/**
+	 * deleteObligation
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Response
+	 */
+	public function deleteObligation(Request $request, Response $response, array $args)
+	{
+		$id = $request->getParsedBodyParam('id', null);
+
+		$res = MainMapper::deleteObligation($id);
+		return $response->withJson($res);
+	}
+
+	/**
 	 * action
 	 *
 	 * Creación/Edición
@@ -207,13 +238,14 @@ class ObligationsControllers extends AdminPanelController
 		$value = $request->getParsedBodyParam('value', null);
 		$current_user_id = $this->user->id;
 
-		$is_edit = $id !== -1;
 
+		$is_edit = $id !== -1;
 		$valid_params = !in_array(null, [
 			$name,
 			$paid,
 			$value,
 		]);
+
 
 		$operation_name = $is_edit ? 'Modificar obligacion' : 'Crear obligacion';
 
@@ -230,6 +262,7 @@ class ObligationsControllers extends AdminPanelController
 		$unknow_error_message = 'Ha ocurrido un error desconocido.';
 
 		$redirect_url_on_create = self::routeName('list');
+		$paid = $paid === 'false' ? 0 : 1;
 
 		if ($valid_params) {
 
@@ -426,7 +459,25 @@ class ObligationsControllers extends AdminPanelController
 				null,
 				$rolesAllowed
 			),
+			new Route(
+				"{$startRoute}/history[/]",
+				"{$handler}:listByUser",
+				"{$namePrefix}-history",
+				'POST',
+				true,
+				null,
+				$rolesAllowed
+			),
 
+			new Route(
+				"{$startRoute}/delete[/]",
+				"{$handler}:deleteObligation",
+				"{$namePrefix}-delete",
+				'POST',
+				true,
+				null,
+				$rolesAllowed
+			),
 		];
 
 		return $routes;

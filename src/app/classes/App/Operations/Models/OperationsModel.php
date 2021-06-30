@@ -51,8 +51,7 @@ class OperationsModel extends BaseEntityMapper
 			'mapper' => UsersModel::class,
 		],
 		'wrote' => [
-			'type' => 'varchar',
-			'length' => 255,
+			'type' => 'datetime',
 		],
 
 	];
@@ -126,6 +125,51 @@ class OperationsModel extends BaseEntityMapper
 		$result = $model->result();
 
 		$result = count($result) > 0 ? $result[0] : null;
+
+		return $result;
+	}
+
+	/**
+	 * getHistoryByUser
+	 *
+	 * @param int $user
+	 * @param int $category
+	 * @return static|object|null
+	 */
+	public static function getHistoryByUser($user, $category)
+	{
+		$model = self::model();
+
+		$where = "user_id = $user ";
+
+		if (strlen($category) > 0) {
+			$where .= " AND category = $category";
+		}
+
+		$model->select()->where($where)->orderBy('Id desc');
+
+		$model->execute();
+
+		$result = $model->result();
+
+		return $result;
+	}
+
+	/**
+	 * deleteOperation
+	 *
+	 * @param int $id
+	 * @return boolean
+	 */
+	public static function deleteOperation($id)
+	{
+		$model = self::model();
+
+		$where = "id = $id ";
+
+		$model->delete($where);
+
+		$result = $model->execute();
 
 		return $result;
 	}

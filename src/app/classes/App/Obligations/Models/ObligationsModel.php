@@ -127,7 +127,45 @@ class ObligationsModel extends BaseEntityMapper
 		return $result;
 	}
 
+	/**
+	 * getListByUser
+	 *
+	 * @param int $user
+	 * @return static|object|null
+	 */
+	public static function getListByUser($user)
+	{
+		$model = self::model();
 
+		$where = "user_id = $user ";
+
+		$model->select()->where($where)->orderBy('name desc');
+
+		$model->execute();
+
+		$result = $model->result();
+
+		return $result;
+	}
+
+	/**
+	 * deleteObligation
+	 *
+	 * @param int $id
+	 * @return boolean
+	 */
+	public static function deleteObligation($id)
+	{
+		$model = self::model();
+
+		$where = "id = $id ";
+
+		$model->delete($where);
+
+		$result = $model->execute();
+
+		return $result;
+	}
 
 	/**
 	 * model

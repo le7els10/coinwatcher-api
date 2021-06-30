@@ -193,6 +193,38 @@ class OperationsController extends AdminPanelController
 	}
 
 	/**
+	 * historyByUser
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Response
+	 */
+	public function historyByUser(Request $request, Response $response, array $args)
+	{
+		$category = $request->getParsedBodyParam('category', null);
+		$current_user_id = $this->user->id;
+		$res = MainMapper::getHistoryByUser($current_user_id, $category);
+		return $response->withJson($res);
+	}
+
+	/**
+	 * deleteOperation
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Response
+	 */
+	public function deleteOperation(Request $request, Response $response, array $args)
+	{
+		$id = $request->getParsedBodyParam('id', null);
+
+		$res = MainMapper::deleteOperation($id);
+		return $response->withJson($res);
+	}
+
+	/**
 	 * action
 	 *
 	 * Creación/Edición
@@ -208,8 +240,7 @@ class OperationsController extends AdminPanelController
 		$category = $request->getParsedBodyParam('category', null);
 		$description = $request->getParsedBodyParam('description', null);
 		$value = $request->getParsedBodyParam('value', null);
-		$current_date = getdate();
-		$current_date = $current_date[0];
+		$current_date = date(self::FORMAT_DATETIME);
 		$current_user_id = $this->user->id;
 		$is_edit = $id !== -1;
 
@@ -431,6 +462,26 @@ class OperationsController extends AdminPanelController
 				"{$startRoute}/action/edit[/]",
 				"{$handler}:action",
 				"{$namePrefix}-actions-edit",
+				'POST',
+				true,
+				null,
+				$rolesAllowed
+			),
+
+			new Route(
+				"{$startRoute}/history[/]",
+				"{$handler}:historyByUser",
+				"{$namePrefix}-history",
+				'POST',
+				true,
+				null,
+				$rolesAllowed
+			),
+
+			new Route(
+				"{$startRoute}/delete[/]",
+				"{$handler}:deleteOperation",
+				"{$namePrefix}-delete",
 				'POST',
 				true,
 				null,

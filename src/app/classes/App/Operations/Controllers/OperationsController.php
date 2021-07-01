@@ -8,6 +8,7 @@ namespace App\Operations\Controllers;
 
 use App\Controller\AdminPanelController;
 use App\Model\UsersModel;
+use App\Obligations\Models\ObligationsModel;
 use App\Operations\Models\OperationsModel as MainMapper;
 use PiecesPHP\Core\HTML\HtmlElement;
 use PiecesPHP\Core\Roles;
@@ -223,6 +224,40 @@ class OperationsController extends AdminPanelController
 		$res = MainMapper::deleteOperation($id);
 		return $response->withJson($res);
 	}
+
+	/**
+	 * getMainValues
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Response
+	 */
+	public function getMainValues(Request $request, Response $response, array $args)
+	{
+		$current_user_id = $this->user->id;
+
+
+		$ahorro = MainMapper::getSumByCategory(AHORRO, $current_user_id);
+		$entrada = MainMapper::getSumByCategory(ENTRADA, $current_user_id);
+		$retiro = MainMapper::getSumByCategory(RETIRO, $current_user_id);
+		$credito = MainMapper::getSumByCategory(CREDITO, $current_user_id);
+		$obligaciones_por_pagar = ObligationsModel::getTotalObligations($current_user_id, true);
+
+		$ahorro = isset($ahorro) ? $ahorro : 0;
+		$entrada = isset($entrada) ? $entrada : 0;
+		$retiro = isset($retiro) ? $retiro : 0;
+		$credito = isset($credito) ? $credito : 0;
+		$obligaciones_por_pagar = isset($obligaciones_por_pagar) ? $obligaciones_por_pagar->total : 0;
+
+		$data['saved'] = $ahorro;
+		$data['credit'] = $credito;
+		$data['bank'] = $entrada - $retiro;
+		$data['free'] = $data['bank'] - $credito - $obligaciones_por_pagar;
+
+		return $response->withJson($data);
+	}
+
 
 	/**
 	 * action
@@ -482,6 +517,16 @@ class OperationsController extends AdminPanelController
 				"{$startRoute}/delete[/]",
 				"{$handler}:deleteOperation",
 				"{$namePrefix}-delete",
+				'POST',
+				true,
+				null,
+				$rolesAllowed
+			),
+
+			new Route(
+				"{$startRoute}/main_values[/]",
+				"{$handler}:getMainValues",
+				"{$namePrefix}-main-values",
 				'POST',
 				true,
 				null,

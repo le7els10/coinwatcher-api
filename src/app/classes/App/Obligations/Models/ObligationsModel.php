@@ -139,11 +139,38 @@ class ObligationsModel extends BaseEntityMapper
 
 		$where = "user_id = $user ";
 
-		$model->select()->where($where)->orderBy('name desc');
+		$model->select()->where($where)->orderBy('name asc');
 
 		$model->execute();
 
 		$result = $model->result();
+
+		return $result;
+	}
+
+	/**
+	 * getTotalObligations
+	 *
+	 * @param int $user
+	 * @param boolean $not_paid
+	 * @return static|object|null
+	 */
+	public static function getTotalObligations($user, $not_paid = false)
+	{
+		$model = self::model();
+
+		$where = "user_id = $user";
+
+		if ($not_paid) {
+			$where .= ' and paid = 0';
+		}
+
+		$model->select('SUM(value) as total')->where($where);
+
+		$model->execute();
+
+		$result = $model->result();
+		$result = $result[0];
 
 		return $result;
 	}

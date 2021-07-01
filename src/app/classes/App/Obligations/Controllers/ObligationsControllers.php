@@ -19,6 +19,8 @@ use Slim\Exception\NotFoundException;
 use \Slim\Http\Request as Request;
 use \Slim\Http\Response as Response;
 
+use function PHPSTORM_META\type;
+
 /**
  * ObligationsControllers.
  *
@@ -205,6 +207,36 @@ class ObligationsControllers extends AdminPanelController
 	}
 
 	/**
+	 * setPaid
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Response
+	 */
+	public function setPaid(Request $request, Response $response, array $args)
+	{
+		$id = $request->getParsedBodyParam('id', null);
+		$current_user_id = $this->user->id;
+
+		$mapper = new MainMapper((int) $id);
+		$mapper->user_id = $current_user_id;
+		$mapper->paid = $mapper->paid == 1 ? 0 : 1;
+
+		$updated = $mapper->update();
+
+		if ($updated) {
+			$result['success'] = true;
+			$result['message'] = 'obligacion actualizada';
+		} else {
+			$result['success'] = false;
+			$result['message'] = 'ha ocurrido un error';
+		}
+
+		return $response->withJson($result);
+	}
+
+	/**
 	 * deleteObligation
 	 *
 	 * @param Request $request
@@ -217,6 +249,22 @@ class ObligationsControllers extends AdminPanelController
 		$id = $request->getParsedBodyParam('id', null);
 
 		$res = MainMapper::deleteObligation($id);
+		return $response->withJson($res);
+	}
+
+	/**
+	 * totalObligations
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Response
+	 */
+	public function totalObligations(Request $request, Response $response, array $args)
+	{
+		$current_user_id = $this->user->id;
+
+		$res = MainMapper::getTotalObligations($current_user_id);
 		return $response->withJson($res);
 	}
 
@@ -299,10 +347,8 @@ class ObligationsControllers extends AdminPanelController
 				if ($exists) {
 
 					try {
-						$mapper->name = $name;
+
 						$mapper->paid = $paid;
-						$mapper->value = $value;
-						$mapper->user_id = $current_user_id;
 
 						$updated = $mapper->update();
 
@@ -473,6 +519,26 @@ class ObligationsControllers extends AdminPanelController
 				"{$startRoute}/delete[/]",
 				"{$handler}:deleteObligation",
 				"{$namePrefix}-delete",
+				'POST',
+				true,
+				null,
+				$rolesAllowed
+			),
+
+			new Route(
+				"{$startRoute}/set_paid[/]",
+				"{$handler}:setPaid",
+				"{$namePrefix}-paid",
+				'POST',
+				true,
+				null,
+				$rolesAllowed
+			),
+
+			new Route(
+				"{$startRoute}/total[/]",
+				"{$handler}:totalObligations",
+				"{$namePrefix}-total-obligations",
 				'POST',
 				true,
 				null,

@@ -141,7 +141,6 @@ class OperationsModel extends BaseEntityMapper
 		$model = self::model();
 
 		$where = "user_id = $user ";
-
 		if (strlen($category) > 0) {
 			$where .= " AND category = $category";
 		}
@@ -175,6 +174,29 @@ class OperationsModel extends BaseEntityMapper
 	}
 
 
+	/**
+	 * getBy
+	 *
+	 * @param mixed $value
+	 * @param string $column
+	 * @return static|object|null
+	 */
+	public static function getSumByCategory($category, $user)
+	{
+		$model = self::model();
+
+		$where = "category = $category and user_id = $user";
+
+		$model->select('SUM(value) as total')->where($where);
+
+		$model->execute();
+
+		$result = $model->result();
+
+		$result = count($result) > 0 ? $result[0]->total : 0;
+
+		return $result;
+	}
 
 	/**
 	 * model

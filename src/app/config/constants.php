@@ -54,3 +54,16 @@ define('ACTIVE_TIMER', false);
 
 //Otras
 define('ADMIN_AREA_PATH_JS', 'statics/admin-area/js');
+
+//CATEGORIES
+define('AHORRO', 1);
+define('ENTRADA', 2);
+define('RETIRO', 3);
+define('CREDITO', 4);
+
+define('CATEGORIES', [
+	AHORRO,
+	ENTRADA,
+	RETIRO,
+	CREDITO,
+]);

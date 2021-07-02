@@ -226,6 +226,24 @@ class OperationsController extends AdminPanelController
 	}
 
 	/**
+	 * getDataForLineChart
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Response
+	 */
+	public function getDataForLineChart(Request $request, Response $response, array $args)
+	{
+		$categories = $request->getParsedBodyParam('categories', null);
+		$current_user_id = $this->user->id;
+
+		$res = MainMapper::getDataForLineChart($categories, $current_user_id);
+
+		return $response->withJson($res);
+	}
+
+	/**
 	 * getMainValues
 	 *
 	 * @param Request $request
@@ -527,6 +545,16 @@ class OperationsController extends AdminPanelController
 				"{$startRoute}/main_values[/]",
 				"{$handler}:getMainValues",
 				"{$namePrefix}-main-values",
+				'POST',
+				true,
+				null,
+				$rolesAllowed
+			),
+
+			new Route(
+				"{$startRoute}/data_line_chart[/]",
+				"{$handler}:getDataForLineChart",
+				"{$namePrefix}-line-chart",
 				'POST',
 				true,
 				null,

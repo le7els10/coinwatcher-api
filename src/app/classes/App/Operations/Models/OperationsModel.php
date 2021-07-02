@@ -175,7 +175,7 @@ class OperationsModel extends BaseEntityMapper
 
 
 	/**
-	 * getBy
+	 * getSumByCategory
 	 *
 	 * @param mixed $value
 	 * @param string $column
@@ -194,6 +194,28 @@ class OperationsModel extends BaseEntityMapper
 		$result = $model->result();
 
 		$result = count($result) > 0 ? $result[0]->total : 0;
+
+		return $result;
+	}
+
+	/**
+	 * getDataForLineChart
+	 *
+	 * @param string $categories
+	 * @param int $user
+	 * @return static|object|null
+	 */
+	public static function getDataForLineChart($categories, $user)
+	{
+		$model = self::model();
+
+		$where = "user_id = $user and category IN ($categories)";
+
+		$model->select('sum(value) as total,wrote,category')->where($where)->groupBy('MONTH(wrote),category');
+
+		$model->execute();
+
+		$result = $model->result();
 
 		return $result;
 	}

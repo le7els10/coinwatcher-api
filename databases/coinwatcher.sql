@@ -144,12 +144,6 @@ INSERT INTO `pcsphp_app_config` (`id`, `name`, `value`) VALUES
 
 -- --------------------------------------------------------
 
---
--- Estructura Stand-in para la vista `pcsphp_articles_view`
--- (Véase abajo para la vista actual)
---
-CREATE TABLE `pcsphp_articles_view` (
-);
 
 -- --------------------------------------------------------
 
@@ -285,14 +279,6 @@ CREATE TABLE `time_on_platform` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
-
---
--- Estructura para la vista `pcsphp_articles_view`
---
-DROP TABLE IF EXISTS `pcsphp_articles_view`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `pcsphp_articles_view`  AS  (select `main`.`id` AS `id`,`sub`.`id` AS `sub_id`,`main`.`author` AS `author`,`main`.`category` AS `category`,`sub`.`lang` AS `lang`,`sub`.`title` AS `title`,`sub`.`friendly_url` AS `friendly_url`,`sub`.`content` AS `content`,`sub`.`seo_description` AS `seo_description`,`main`.`folder` AS `folder`,`main`.`visits` AS `visits`,`main`.`images` AS `images`,`sub`.`meta` AS `meta`,`main`.`start_date` AS `start_date`,`main`.`end_date` AS `end_date`,`main`.`created` AS `created`,`main`.`updated` AS `updated` from (`pcsphp_articles` `main` join `pcsphp_articles_content` `sub` on(`sub`.`content_of` = `main`.`id`))) ;
-
 --
 -- Índices para tablas volcadas
 --

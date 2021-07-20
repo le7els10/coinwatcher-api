@@ -31,9 +31,9 @@ if (is_local()) {
 	$config['database']['default']['charset'] = 'utf8';
 } else {
 	$config['database']['default']['driver'] = 'mysql';
-	$config['database']['default']['db'] = 'admin_pieces';
-	$config['database']['default']['user'] = 'root';
-	$config['database']['default']['password'] = 'PASSWORD';
+	$config['database']['default']['db'] = 'coinwatcher';
+	$config['database']['default']['user'] = 'admin';
+	$config['database']['default']['password'] = 'nemesis123';
 	$config['database']['default']['host'] = 'localhost';
 	$config['database']['default']['charset'] = 'utf8';
 }

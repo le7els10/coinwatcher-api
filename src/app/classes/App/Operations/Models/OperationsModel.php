@@ -222,6 +222,29 @@ class OperationsModel extends BaseEntityMapper
 	}
 
 	/**
+	 * getAverageForLineChart
+	 *
+	 * @param string $categories
+	 * @param int $lenght of categories
+	 * @param int $user
+	 * @return static|object|null
+	 */
+	public static function getAverageForLineChart($categories, $categories_length, $user)
+	{
+		$model = self::model();
+
+		$where = "(user_id = $user and category IN ($categories)) and value >= 0";
+
+		$model->select("sum(value)/$categories_length as total,wrote,category")->where($where)->groupBy('MONTH(wrote)')->orderBy('wrote asc');
+
+		$model->execute();
+
+		$result = $model->result();
+
+		return $result;
+	}
+
+	/**
 	 * model
 	 *
 	 * @return BaseModel

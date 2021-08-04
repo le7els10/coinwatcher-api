@@ -212,7 +212,7 @@ class OperationsModel extends BaseEntityMapper
 
 		$where = "(user_id = $user and category IN ($categories)) and value >= 0";
 
-		$model->select('sum(value) as total,wrote,category')->where($where)->groupBy('MONTH(wrote),category')->orderBy('wrote asc');
+		$model->select('sum(value) as total,wrote,category')->where($where)->groupBy('YEAR(wrote),MONTH(wrote),category')->orderBy('wrote asc');
 
 		$model->execute();
 

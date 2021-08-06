@@ -204,8 +204,10 @@ class OperationsController extends AdminPanelController
 	public function historyByUser(Request $request, Response $response, array $args)
 	{
 		$category = $request->getParsedBodyParam('category', null);
+		$page = $request->getParsedBodyParam('page', null);
+
 		$current_user_id = $this->user->id;
-		$res = MainMapper::getHistoryByUser($current_user_id, $category);
+		$res = MainMapper::getHistoryByUser($current_user_id, $page, $category);
 		return $response->withJson($res);
 	}
 

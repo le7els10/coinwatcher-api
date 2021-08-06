@@ -136,23 +136,31 @@ class OperationsModel extends BaseEntityMapper
 	 * @param int $category
 	 * @return static|object|null
 	 */
-	public static function getHistoryByUser($user, $category)
+	public static function getHistoryByUser($user, $page = 1, $category = 0)
 	{
 		$model = self::model();
 
 		$where = "user_id = $user ";
 
-		if (strlen($category) > 0) {
+		if ($category != 0) {
 			$where .= " AND category = $category";
 		}
 
 		$model->select()->where($where)->orderBy('wrote desc');
 
-		$model->execute();
+		$model->execute(false, $page, 10);
 
 		$result = $model->result();
+		$model->select('count(id) as total')->where($where);
+		$model->execute();
 
-		return $result;
+		$total = $model->result();
+
+		$data['result'] = $result;
+		$data['page'] = $page;
+		$data['total'] = count($total) > 0 ? (int) $total[0]->total : 0;
+
+		return $data;
 	}
 
 	/**

@@ -157,7 +157,7 @@ class OperationsModel extends BaseEntityMapper
 		$total = $model->result();
 
 		$data['result'] = $result;
-		$data['page'] = $page;
+		$data['page'] = (int) $page;
 		$data['total'] = count($total) > 0 ? (int) $total[0]->total : 0;
 
 		return $data;

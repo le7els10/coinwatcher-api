@@ -218,7 +218,10 @@ class OperationsModel extends BaseEntityMapper
 	{
 		$model = self::model();
 
-		$where = "(user_id = $user and category IN ($categories)) and value >= 0";
+		//dias de base
+		$dias = 150;
+
+		$where = "DATEDIFF(NOW(), wrote) <= $dias and (user_id = $user and category IN ($categories)) and value >= 0";
 
 		$model->select('sum(value) as total,wrote,category')->where($where)->groupBy('YEAR(wrote),MONTH(wrote),category')->orderBy('wrote asc');
 

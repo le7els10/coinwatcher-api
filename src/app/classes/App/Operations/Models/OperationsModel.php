@@ -219,7 +219,7 @@ class OperationsModel extends BaseEntityMapper
 		$model = self::model();
 
 		//dias de base
-		$dias = 150;
+		$dias = 155;
 
 		$where = "DATEDIFF(NOW(), wrote) <= $dias and (user_id = $user and category IN ($categories)) and value >= 0";
 

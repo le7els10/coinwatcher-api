@@ -219,9 +219,11 @@ class OperationsModel extends BaseEntityMapper
 		$model = self::model();
 
 		//meses de base
-		$months = 5;
+		$months = 6;
+		$now = date("Y-m-01");
+		$months_after = date("Y-m-01", strtotime("-$months month", strtotime((string) $now)));
 
-		$where = "TIMESTAMPDIFF(MONTH,wrote,NOW()) <= $months and (user_id = $user and category IN ($categories)) and value >= 0";
+		$where = "wrote BETWEEN '$months_after' and '$now' and (user_id = $user and category IN ($categories)) and value >= 0";
 
 		$model->select('sum(value) as total,wrote,category')->where($where)->groupBy('YEAR(wrote),MONTH(wrote),category')->orderBy('wrote asc');
 

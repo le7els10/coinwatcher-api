@@ -220,7 +220,7 @@ class OperationsModel extends BaseEntityMapper
 
 		//meses de base
 		$months = 6;
-		$now = date("Y-m-01");
+		$now = date("Y-m-31");
 		$months_after = date("Y-m-01", strtotime("-$months month", strtotime((string) $now)));
 
 		$where = "wrote BETWEEN '$months_after' and '$now' and (user_id = $user and category IN ($categories)) and value >= 0";

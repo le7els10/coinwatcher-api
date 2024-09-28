@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.4
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 28-06-2021 a las 16:12:24
--- Versión del servidor: 10.4.16-MariaDB
--- Versión de PHP: 7.4.12
+-- Tiempo de generación: 28-09-2024 a las 23:57:12
+-- Versión del servidor: 10.4.21-MariaDB
+-- Versión de PHP: 7.4.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -45,6 +45,7 @@ CREATE TABLE `co_operations` (
   `id` int(11) NOT NULL,
   `category` int(11) NOT NULL,
   `description` varchar(255) NOT NULL,
+  `type` int(11) NOT NULL DEFAULT 0 COMMENT 'Ocio, Imprevisto, Obligacion, indefinido',
   `value` varchar(255) NOT NULL,
   `user_id` bigint(11) NOT NULL,
   `wrote` varchar(255) NOT NULL
@@ -72,7 +73,10 @@ CREATE TABLE `login_attempts` (
 --
 
 INSERT INTO `login_attempts` (`id`, `user_id`, `username_attempt`, `success`, `ip`, `message`, `date`, `extra_data`) VALUES
-(1, 1, 'root', 1, '::1', '', '2021-06-28 08:43:58', '{\"dimensions\":{\"w\":1920,\"h\":1080},\"userAgent\":\"Mozilla\\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\\/537.36 (KHTML, like Gecko) Chrome\\/91.0.4472.114 Safari\\/537.36\"}');
+(1, 1, 'root', 1, '::1', '', '2021-06-28 08:43:58', '{\"dimensions\":{\"w\":1920,\"h\":1080},\"userAgent\":\"Mozilla\\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\\/537.36 (KHTML, like Gecko) Chrome\\/91.0.4472.114 Safari\\/537.36\"}'),
+(2, 4, 'le7els10@gmail.com', 1, '::1', '', '2024-09-28 15:54:40', '{\"dimensions\":{\"w\":null,\"h\":null},\"userAgent\":\"Mozilla\\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\\/537.36 (KHTML, like Gecko) Chrome\\/129.0.0.0 Safari\\/537.36\"}'),
+(3, 4, 'le7els10@gmail.com', 1, '::1', '', '2024-09-28 15:55:09', '{\"dimensions\":{\"w\":null,\"h\":null},\"userAgent\":\"Mozilla\\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\\/537.36 (KHTML, like Gecko) Chrome\\/129.0.0.0 Safari\\/537.36\"}'),
+(4, 4, 'le7els10@gmail.com', 1, '::1', '', '2024-09-28 16:03:52', '{\"dimensions\":{\"w\":null,\"h\":null},\"userAgent\":\"Mozilla\\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\\/537.36 (KHTML, like Gecko) Chrome\\/129.0.0.0 Safari\\/537.36\"}');
 
 -- --------------------------------------------------------
 
@@ -141,9 +145,6 @@ INSERT INTO `pcsphp_app_config` (`id`, `name`, `value`) VALUES
 (15, 'osTicketAPIKey', '93F0F2E3DCD3B79A686A3157620CFF24'),
 (16, 'owner', 'Sample Inc.'),
 (17, 'title_app', 'Nombre Plataforma');
-
--- --------------------------------------------------------
-
 
 -- --------------------------------------------------------
 
@@ -249,7 +250,8 @@ CREATE TABLE `pcsphp_users` (
 INSERT INTO `pcsphp_users` (`id`, `username`, `password`, `firstname`, `secondname`, `first_lastname`, `second_lastname`, `email`, `meta`, `type`, `status`, `failed_attempts`, `created_at`, `modified_at`) VALUES
 (1, 'root', '$2y$10$7zoL4vBsF3FZ/73jSUrrD.yjYExwn3ZTIp4TsGGJr0xEaMQCmDBEK', 'Administrador', '', 'Root', '', 'vicsenmorantes@tejidodigital.com', '', 0, 1, 0, '2018-06-20 14:11:54', '2019-01-21 05:19:37'),
 (2, 'admin', '$2y$10$hdmge3MNnbOcD5hp2OwCtuC/HzqKwkgibWGKc0hqpfn55mfRqDCfu', 'Lacey', 'Russo', 'Young', 'Curry', 'jonys@mailinator.net', NULL, 1, 1, 0, '2019-10-08 11:07:37', '2019-10-08 11:07:37'),
-(3, 'general', '$2y$10$sIZ0qYha8A/6xIv2tsatL.sDPXlkmLMZt.QqUPvNZxnlcD4cgYiuW', 'Diana', 'Donovan', 'Bean', 'Buckley', 'wynim@mailinator.com', 'null', 2, 1, 0, '2019-10-08 11:07:45', '2019-10-08 11:08:01');
+(3, 'general', '$2y$10$sIZ0qYha8A/6xIv2tsatL.sDPXlkmLMZt.QqUPvNZxnlcD4cgYiuW', 'Diana', 'Donovan', 'Bean', 'Buckley', 'wynim@mailinator.com', 'null', 2, 1, 0, '2019-10-08 11:07:45', '2019-10-08 11:08:01'),
+(4, 'le7els10@gmail.com', '$2y$10$syFxiDinicKebrDKxML68u.ETTLaPEopR1nuCOyFPvo/rSp5EEwdW', 'Juan', '', 'Nuñez', '', 'le7els10@gmail.com', NULL, 2, 1, 0, '2024-09-28 15:54:40', '2024-09-28 15:54:40');
 
 -- --------------------------------------------------------
 
@@ -278,7 +280,6 @@ CREATE TABLE `time_on_platform` (
   `minutes` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- --------------------------------------------------------
 --
 -- Índices para tablas volcadas
 --
@@ -396,7 +397,7 @@ ALTER TABLE `co_operations`
 -- AUTO_INCREMENT de la tabla `login_attempts`
 --
 ALTER TABLE `login_attempts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `messages`
@@ -450,7 +451,7 @@ ALTER TABLE `pcsphp_tokens`
 -- AUTO_INCREMENT de la tabla `pcsphp_users`
 --
 ALTER TABLE `pcsphp_users`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `pcsphp_user_problems`

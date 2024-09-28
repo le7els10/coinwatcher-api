@@ -42,6 +42,9 @@ class OperationsModel extends BaseEntityMapper
 			'type' => 'varchar',
 			'length' => 255,
 		],
+		'type' => [
+			'type' => 'int',
+		],
 		'user_id' => [
 			'type' => 'int',
 			'reference_table' => 'pcsphp_users',

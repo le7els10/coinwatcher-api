@@ -293,6 +293,7 @@ class OperationsController extends AdminPanelController
 	{
 		$id = $request->getParsedBodyParam('id', -1);
 		$category = $request->getParsedBodyParam('category', null);
+		$type = $request->getParsedBodyParam('type', null);
 		$description = $request->getParsedBodyParam('description', null);
 		$value = $request->getParsedBodyParam('value', null);
 		$current_date = date(self::FORMAT_DATETIME);
@@ -303,6 +304,7 @@ class OperationsController extends AdminPanelController
 			$category,
 			$description,
 			$value,
+			$type
 		]);
 
 		$operation_name = $is_edit ? 'Modificar Operacion' : 'Crear operacion';
@@ -331,6 +333,7 @@ class OperationsController extends AdminPanelController
 
 
 					$mapper->category = $category;
+					$mapper->type = $type;
 					$mapper->description = $description;
 					$mapper->value = $value;
 					$mapper->user_id = $current_user_id;
@@ -362,6 +365,7 @@ class OperationsController extends AdminPanelController
 
 
 						$mapper->category = $category;
+						$mapper->type = $type;
 						$mapper->description = $description;
 						$mapper->value = $value;
 						$mapper->user_id = $current_user_id;

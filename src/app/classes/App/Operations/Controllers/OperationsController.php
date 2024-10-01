@@ -246,6 +246,23 @@ class OperationsController extends AdminPanelController
 	}
 
 	/**
+	 * getDataForPieChart
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Response
+	 */
+	public function getDataForPieChart(Request $request, Response $response, array $args)
+	{
+		$current_user_id = $this->user->id;
+
+		$res = MainMapper::getDataForPieChart($current_user_id);
+
+		return $response->withJson($res);
+	}
+
+	/**
 	 * getMainValues
 	 *
 	 * @param Request $request
@@ -561,6 +578,16 @@ class OperationsController extends AdminPanelController
 				"{$startRoute}/data_line_chart[/]",
 				"{$handler}:getDataForLineChart",
 				"{$namePrefix}-line-chart",
+				'POST',
+				true,
+				null,
+				$rolesAllowed
+			),
+
+			new Route(
+				"{$startRoute}/data_pie_chart[/]",
+				"{$handler}:getDataForPieChart",
+				"{$namePrefix}-pie-chart",
 				'POST',
 				true,
 				null,

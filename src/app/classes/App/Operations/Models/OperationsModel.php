@@ -6,6 +6,7 @@
 
 namespace App\Operations\Models;
 
+use App\Model\UsersModel;
 use PiecesPHP\Core\BaseEntityMapper;
 
 /**
@@ -235,6 +236,58 @@ class OperationsModel extends BaseEntityMapper
 		$result = $model->result();
 
 		return $result;
+	}
+
+	/**
+	 * getDataForPieChart
+	 *
+	 * @param int $user
+	 * @return static|object|null
+	 */
+	public static function getDataForPieChart($user)
+	{
+		$model = self::model();
+
+		//meses de base
+		// $months = 6;
+		// $now = date("Y-m-31");
+		// $months_after = date("Y-m-01", strtotime("-$months month", strtotime((string) $now)));
+
+		// $where = "wrote BETWEEN '$months_after' and '$now' and (user_id = $user and category IN ($categories)) and value >= 0";
+
+		// $model->select('sum(value) as total,wrote,category')->where($where)->groupBy('YEAR(wrote),MONTH(wrote),category')->orderBy('wrote asc');
+		$model->select('sum(value) as total,type,wrote')->groupBy('type')->orderBy('type asc');
+
+		$model->execute();
+
+		$result = $model->result();
+
+		if (count($result) > 0) {
+			foreach (OPERATIONS_TYPE as $operation_type_index) {
+				$exist = false;
+				foreach ($result as $item) {
+					if ($operation_type_index == intval($item->type)) {
+						$exist = true;
+						break;
+					}
+				}
+
+				if ($exist) {
+					$to_return['datasets'][0]['data'][$operation_type_index] = intval($item->total);
+				} else {
+					$to_return['datasets'][0]['data'][$operation_type_index] = 0;
+				}
+			}
+		} else {
+			$to_return['datasets'][0]['data'] = [0, 0, 0, 0, 0];
+		}
+
+		$to_return['labels'] = ['Indefinido', 'Obligación', 'Ocio', 'Imprevisto', 'Entrada'];
+		$to_return['datasets'][0]['label'] = 'Tipos de operaciones';
+		$to_return['datasets'][0]['backgroundColor'] = ['#bcc1d5', '#BABD53', '#a55e7d', '#5aa2ea', '#289381'];
+		$to_return['datasets'][0]['hoverOffset'] = 4;
+
+		return $to_return;
 	}
 
 	/**

@@ -67,3 +67,19 @@ define('CATEGORIES', [
 	RETIRO,
 	CREDITO,
 ]);
+
+
+//OPERATIONS TYPE
+define('OT_INDEFINIDO', 0);
+define('OT_OBLIGACION', 1);
+define('OT_OCIO', 2);
+define('OT_IMPREVISTO', 3);
+define('OT_ENTRADA', 4);
+
+define('OPERATIONS_TYPE', [
+	OT_INDEFINIDO,
+	OT_OBLIGACION,
+	OT_OCIO,
+	OT_IMPREVISTO,
+	OT_ENTRADA,
+]);

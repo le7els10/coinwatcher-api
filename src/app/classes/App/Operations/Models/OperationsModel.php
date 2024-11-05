@@ -249,14 +249,11 @@ class OperationsModel extends BaseEntityMapper
 		$model = self::model();
 		$ahorro_constant = AHORRO;
 		//meses de base
-		// $months = 6;
-		// $now = date("Y-m-31");
-		// $months_after = date("Y-m-01", strtotime("-$months month", strtotime((string) $now)));
+		$months = 1;
+		$now = date("Y-m-31");
+		$months_after = date("Y-m-01", strtotime("-$months month", strtotime((string) $now)));
 
-		// $where = "wrote BETWEEN '$months_after' and '$now' and (user_id = $user and category IN ($categories)) and value >= 0";
-		$where = "category != $ahorro_constant and user_id = $user";
-
-		// $model->select('sum(value) as total,wrote,category')->where($where)->groupBy('YEAR(wrote),MONTH(wrote),category')->orderBy('wrote asc');
+		$where = "wrote BETWEEN '$months_after' and '$now' and (user_id = $user and category != ($ahorro_constant)) and value >= 0";
 		$model->select('sum(value) as total,type,wrote')->where($where)->groupBy('type')->orderBy('type asc');
 
 		$model->execute();
